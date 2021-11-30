@@ -1,6 +1,7 @@
 import react from "react";
 import { Link, Route,Routes,Outlet,NavLink } from 'react-router-dom'
 import { Groups } from "./Groups";
+import Calendar from "./calendarapp"
 import logo from '../resources/logo.png'
 
 
@@ -12,7 +13,7 @@ export const Navbar = () => {
                         <Route path="/" element={<Layout />}>
                             <Route index element={<Home />} />
                             <Route path="groups" element={<Groups />} />
-                            <Route path="pricing" element={<Pricing />} />
+                            <Route path="calendar" element={<Calendar />} />
                             <Route path="about" element={<About />} />
                         </Route>
                   </Routes>
@@ -43,7 +44,7 @@ function Layout() {
                 <NavLink className="nav-link" to="/groups">Groups</NavLink>
                 </li>
                 <li class="nav-item">
-                <NavLink className="nav-link" to="/pricing">Pricing</NavLink>
+                <NavLink className="nav-link" to="/calendar">Calendar</NavLink>
                 </li>
                 <li class="nav-item">  
                 <NavLink className="nav-link" to="/about">About</NavLink>
@@ -78,12 +79,6 @@ function Home() {
     );
 }
 
-function Pricing() {
-    return (
-        <div>
-        </div>
-    );
-}
 function About() {
     return (
         <div>
