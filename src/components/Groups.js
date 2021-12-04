@@ -1,13 +1,14 @@
 import React from 'react'
-import { Card } from './Card'
 import { GroupList } from './GroupList'
+import './Groups.css'
 
 
 export const Groups = () => {
     return (
-        <div className="Container">
+        <div className="container">
 
-            <GroupList/>
+            <GroupList myHeader="My Groups" className="my-groups" cardClassName="my-card"/>
+            <GroupList myHeader="Public Groups" className="other-groups clearfix" cardClassName="other-card"/>
         </div>
     )
 }
