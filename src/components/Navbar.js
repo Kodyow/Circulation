@@ -1,8 +1,8 @@
 import react from "react";
 import { Link, Route,Routes,Outlet,NavLink } from 'react-router-dom'
 import { Groups } from "./Groups";
-import Calendar from "./calendarapp"
-import logo from '../resources/logo.png'
+import Calendar from "./calendarapp";
+import logo from '../resources/logo.png';
 
 
 export const Navbar = () => {
