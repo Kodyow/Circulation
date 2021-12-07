@@ -5,7 +5,7 @@ import './Groups.css'
 
 export const Groups = () => {
     return (
-        <div className="container">
+        <div className="group-container">
 
             <GroupList myHeader="My Groups" className="my-groups" cardClassName="my-card"/>
             <GroupList myHeader="Public Groups" className="other-groups clearfix" cardClassName="other-card"/>

@@ -1,8 +1,9 @@
-import react from "react";
-import { Link, Route,Routes,Outlet,NavLink } from 'react-router-dom'
+import { Route,Routes,Outlet,NavLink } from 'react-router-dom'
 import { Groups } from "./Groups";
-import Calendar from "./calendarapp";
-import logo from '../resources/logo.png';
+import Register from "./Register";
+import Calendar from "./calendarapp"
+import logo from '../resources/logo.png'
+import './Nav.css'
 
 
 export const Navbar = () => {
@@ -15,6 +16,8 @@ export const Navbar = () => {
                             <Route path="groups" element={<Groups />} />
                             <Route path="calendar" element={<Calendar />} />
                             <Route path="about" element={<About />} />
+                            <Route path="signin" element={<About />} />
+                            <Route path="register" element={<Register />} />
                         </Route>
                   </Routes>
             </div>
@@ -27,43 +30,56 @@ export const Navbar = () => {
 function Layout() {
     return (
     <div>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div className="container-fluid">
             <img src={logo} alt="logo" width="80rem" height="50rem"/>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarColor01">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                <NavLink className="nav-link" to="/" >Home</NavLink>
-                </li>
-                <li class="nav-item">
-                <NavLink className="nav-link" to="/groups">Groups</NavLink>
-                </li>
-                <li class="nav-item">
-                <NavLink className="nav-link" to="/calendar">Calendar</NavLink>
-                </li>
-                <li class="nav-item">  
-                <NavLink className="nav-link" to="/about">About</NavLink>
-                </li>
-                {/*
-                <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                <div class="dropdown-menu show">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Separated link</a>
-                </div>
-                </li>
-                */
-                }
+            <div className="collapse navbar-collapse" id="navbarColor01">
+                <ul className="navbar-nav me-auto">
+                    <li className="nav-item">
+                    <NavLink className="nav-link" to="/" >Home</NavLink>
+                    </li>
+                    <li className="nav-item">
+                    <NavLink className="nav-link" to="/groups">Groups</NavLink>
+                    </li>
+                    <li className="nav-item">
+                    <NavLink className="nav-link" to="/calendar">Calendar</NavLink>
+                    </li>
+                    <li className="nav-item">  
+                    <NavLink className="nav-link" to="/about">About</NavLink>
+                    </li>
+                    {/*
+                    <li className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle show" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                    <div className="dropdown-menu show">
+                        <a className="dropdown-item" href="#">Action</a>
+                        <a className="dropdown-item" href="#">Another action</a>
+                        <a className="dropdown-item" href="#">Something else here</a>
+                        <div className="dropdown-divider"></div>
+                        <a className="dropdown-item" href="#">Separated link</a>
+                    </div>
+                    </li>
+                    */
+                    }
 
-            </ul>
+                </ul>
+              
+            </div>
+            <div className="sign-link">
+                <ul className="navbar-nav me-auto">
+                    <li className="nav-item">
+                        <NavLink className="nav-link" to="/signin">Sign in</NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink className="nav-link" to="/register">Register</NavLink>
+                    </li>
+
+                </ul>
+                    
             </div>
         </div>
         </nav>
