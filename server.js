@@ -18,9 +18,25 @@ app.use(cors())
 app.post('/auth/register', (req,res) => {
     const username = req.body.username
     const password = req.body.password
+    const email = req.body.email
+    const phone = req.body.phone
     db.query(
-        "SELECT * FROM USERS WHERE User_ID = ? and Password = ?",
-        [username,password],
+        "INSERT INTO USERS (User_ID,User_Name,Password,Email,Phone_Number) VALUES (100,?,?,?,?)",
+        [username,password,email,phone],
+        (err,result)=> {
+            if(err) {
+                console.log({err: err});
+            }
+        }
+    );
+});
+
+app.post('/auth/login', (req,res) => {
+    const username = req.body.username
+    const password = req.body.password
+    db.query(
+        "SELECT * FROM USERS WHERE User_Name = ?;",
+        username,
         (err,result)=> {
             if(err) {
                 console.log({err: err});

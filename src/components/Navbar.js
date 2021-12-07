@@ -1,6 +1,7 @@
 import { Route,Routes,Outlet,NavLink } from 'react-router-dom'
 import { Groups } from "./Groups";
 import Register from "./Register";
+import Login from './Login';
 import Calendar from "./calendarapp"
 import logo from '../resources/logo.png'
 import './Nav.css'
@@ -16,12 +17,11 @@ export const Navbar = () => {
                             <Route path="groups" element={<Groups />} />
                             <Route path="calendar" element={<Calendar />} />
                             <Route path="about" element={<About />} />
-                            <Route path="signin" element={<About />} />
+                            <Route path="login" element={<Login />} />
                             <Route path="register" element={<Register />} />
                         </Route>
                   </Routes>
             </div>
-            
         </div>
       );
 }
@@ -72,7 +72,7 @@ function Layout() {
             <div className="sign-link">
                 <ul className="navbar-nav me-auto">
                     <li className="nav-item">
-                        <NavLink className="nav-link" to="/signin">Sign in</NavLink>
+                        <NavLink className="nav-link" to="/login">Login</NavLink>
                     </li>
                     <li className="nav-item">
                         <NavLink className="nav-link" to="/register">Register</NavLink>
