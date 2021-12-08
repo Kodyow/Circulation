@@ -6,6 +6,7 @@ import Calendar from "./calendarapp"
 import circulation from '../resources/circulation.png'
 import logo from '../resources/logo.png'
 import './Nav.css'
+import SignIn from "./SignIn";
 import { Card } from './Card'
 
 
@@ -19,7 +20,7 @@ export const Navbar = () => {
                             <Route path="groups" element={<Groups />} />
                             <Route path="calendar" element={<Calendar />} />
                             <Route path="about" element={<About />} />
-                            <Route path="signin" element={<About />} />
+                            <Route path="signin" element={<SignIn />} />
                             <Route path="register" element={<Register />} />
                         </Route>
                   </Routes>
@@ -149,5 +150,3 @@ function About() {
         </div>
     );
 }
-  
-
