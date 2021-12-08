@@ -2,8 +2,11 @@ import { Route,Routes,Outlet,NavLink } from 'react-router-dom'
 import { Groups } from "./Groups";
 import Register from "./Register";
 import Calendar from "./calendarapp"
+//import Home from "../index"
+import circulation from '../resources/circulation.png'
 import logo from '../resources/logo.png'
 import './Nav.css'
+import { Card } from './Card'
 
 
 export const Navbar = () => {
@@ -91,6 +94,29 @@ function Layout() {
 function Home() {
     return (
         <div>
+            <img src={circulation} alt="Several individual people along with technology 
+            and all seven continents behind the logo for Circulation." style = {{width: "70%", alignSelf: "center", justifyContent: "center"}}/>
+            <div class={` card text-white bg-secondary mb-3`} style = {{width: "70%"}}>
+                <div class="card-header">Header</div>
+                <div class="card-body">
+                    <h4 class="card-title">Secondary card title</h4>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+            <div class={` card text-white bg-secondary mb-3`} style = {{width: "70%"}}>
+                <div class="card-header">Header</div>
+                <div class="card-body">
+                    <h4 class="card-title">Secondary card title</h4>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+            <div class={` card text-white bg-secondary mb-3`} style = {{width: "70%"}}>
+                <div class="card-header">Header</div>
+                <div class="card-body">
+                    <h4 class="card-title">Secondary card title</h4>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
         </div>
     );
 }
