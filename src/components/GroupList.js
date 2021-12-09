@@ -1,18 +1,16 @@
 import React from 'react'
 import { Card } from './Card'
 
-export const GroupList = ({myHeader, className, cardClassName}) => {
+export const GroupList = ({cardClassName}) => {
     return (
         <>
-            <h2>{myHeader}</h2>
-            <div className={className}>
-                <Card className={cardClassName}/>
-                <Card className={cardClassName}/>
-                <Card className={cardClassName}/>
-                <Card className={cardClassName}/>
-                <Card className={cardClassName}/>
-                <Card className={cardClassName}/>
-            </div>
+            
+            <Card className={cardClassName}/>
+            <Card className={cardClassName}/>
+            <Card className={cardClassName}/>
+            <Card className={cardClassName}/>
+            <Card className={cardClassName}/>
+            <Card className={cardClassName}/>
         </>
     )
 }

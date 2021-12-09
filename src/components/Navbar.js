@@ -1,5 +1,9 @@
+import React, { useState, useEffect} from 'react';
+import Axios from 'axios';
+
 import { Route,Routes,Outlet,NavLink } from 'react-router-dom'
 import { Groups } from "./Groups";
+import SocialGroup from "./SocialGroup";
 import Register from "./Register";
 import Login from './Login';
 import Calendar from "./calendarapp"
@@ -8,13 +12,16 @@ import './Nav.css'
 
 
 export const Navbar = () => {
+    
     return (
         <div className="App">
             <div>
                   <Routes>
                         <Route path="/" element={<Layout />}>
                             <Route index element={<Home />} />
-                            <Route path="groups" element={<Groups />} />
+                            <Route path="groups" element={<Groups />}/>
+                            <Route path="groups/:id" element={<SocialGroup />}/>
+                            <Route path="social" element={<SocialGroup />}/>
                             <Route path="calendar" element={<Calendar />} />
                             <Route path="about" element={<About />} />
                             <Route path="login" element={<Login />} />
@@ -28,6 +35,15 @@ export const Navbar = () => {
 
 
 function Layout() {
+    const [LoginStatus, setLoginStatus] = useState();
+    // useEffect(() => {
+    //     Axios.get("http://localhost:5000/").then((response) => {
+    //         if (response.data.loggedIn === true) {
+    //             setLoginStatus(response.data.user[0].username);
+    //         }
+    //         console.log(response);
+    //     });
+    // }, []);
     return (
     <div>
         <nav className="navbar navbar-expand-lg navbar-dark bg-primary">

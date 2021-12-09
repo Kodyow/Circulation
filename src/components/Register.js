@@ -22,6 +22,7 @@ function Register() {
         <div className="container">
             <form onSubmit={register}>
                 <fieldset>
+                    <h1>Register</h1>
                     <div className="form-group">
                         <label htmlFor="usernameReg" className="form-label mt-4">Username</label>
                         <input name="username" type="username" className="form-control" id="usernameReg" placeholder="Username" onChange={(e)=>{setUsernameReg(e.target.value)}}/>

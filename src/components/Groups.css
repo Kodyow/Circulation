@@ -10,10 +10,14 @@
     margin: 1%;
     width: 70%;
     display: inline-block;
-    white-space: nowrap;
-    overflow-x: scroll;
-    overflow-y: hidden;
+    /* white-space: nowrap;
+    overflow-x: scroll; */
+    overflow-y: scroll;
+    box-sizing: border-box;
 }
+/* h2 {
+    position:;
+} */
 .my-card {
     border: 1px solid black;
     min-width: 10em;
