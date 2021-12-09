@@ -7,8 +7,11 @@ import SocialGroup from "./SocialGroup";
 import Register from "./Register";
 import Login from './Login';
 import Calendar from "./calendarapp"
+//import Home from "../index"
+import circulation from '../resources/circulation.png'
 import logo from '../resources/logo.png'
 import './Nav.css'
+import SignIn from "./SignIn";
 
 
 export const Navbar = () => {
@@ -107,6 +110,41 @@ function Layout() {
 function Home() {
     return (
         <div>
+            <img src={circulation} alt="Several individual people along with technology 
+            and all seven continents behind the logo for Circulation." style = {{width: "75%", marginTop: "1%", marginLeft: "13%"}}/>
+
+            <div class={`my-card card text-white bg-secondary mb-3`} style = {{width: "82.5%", height: "20%", marginLeft: "8%"}}>
+                <div class="card-header"></div>
+                <div class="card-body">
+                    <h4 class="card-title">Welcome to Circulation!</h4>
+                    <p class="card-text">Circulation is a way for you to connect with other people based on interests and help you 
+                        with your schedule both with attending and scheduling events.</p>
+                </div>
+            </div>
+                
+            <div>
+                <div class={`my-card card text-white bg-secondary mb-3`} style = {{width: "21.65%", height: "10%", marginLeft: "8%"}}>
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                        <h4 class="card-title">Dino Jazvin</h4>
+                        <p class="card-text">email: dinojaz@uw.edu</p>
+                    </div>
+                </div>
+                <div class={`my-card card text-white bg-secondary mb-3`} style = {{width: "21.65%", height: "10%", marginLeft: "8%"}}>
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                        <h4 class="card-title">Elisabeth Jewett</h4>
+                        <p class="card-text">email: elisaj3@uw.edu</p>
+                    </div>
+                </div>
+                <div class={`my-card card text-white bg-secondary mb-3`} style = {{width: "21.65%", height: "10%", marginLeft: "8%"}}>
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                        <h4 class="card-title">Kody Okakura Williams</h4>
+                        <p class="card-text">email: kodyow@uw.edu</p>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
@@ -114,8 +152,16 @@ function Home() {
 function About() {
     return (
         <div>
+             <div class={`my-card card text-white bg-secondary mb-3`} style = {{width: "80%", height: "20%", marginLeft: "10.5%"}}>
+                <div class="card-header"></div>
+                <div class="card-body">
+                    <h4 class="card-title">Welcome to Circulation!</h4>
+                    <p class="card-text">Circulation is a way for you to connect with other people based on interests and help you
+                         with your schedule both with attending and scheduling events.</p>
+                    <p class="card-text">Through Circulation, you will be able to see when events you want to attend
+                         or host will overlap or clash with each other.</p>
+                </div>
+            </div>
         </div>
     );
 }
-  
-
