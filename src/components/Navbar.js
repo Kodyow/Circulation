@@ -7,7 +7,6 @@ import circulation from '../resources/circulation.png'
 import logo from '../resources/logo.png'
 import './Nav.css'
 import SignIn from "./SignIn";
-import { Card } from './Card'
 
 
 export const Navbar = () => {
