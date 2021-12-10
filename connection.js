@@ -1,4 +1,7 @@
 var mysql = require('mysql2');
+/**
+ * mySql Connection
+ */
 var connection = mysql.createConnection({
     host     : '34.71.155.174',
     user     : 'All',
