@@ -1,3 +1,7 @@
 .sign-link {
     float: left;
 }
+
+.hidden {
+    display: none;
+}

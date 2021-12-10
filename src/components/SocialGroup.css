@@ -6,3 +6,13 @@
 .group-profile {
     align-content: center;
 }
+
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+p span {
+    display: inline-block;
+}

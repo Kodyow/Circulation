@@ -29,10 +29,46 @@ app.use(
       resave: false,
       saveUninitialized: false,
       cookie: {
-        expires: 60 * 60 * 24,
+        expires: 1000* 60 * 60 * 24,
       },
     })
   );
+
+app.post('/groups/new', (req,res) => {
+    const groupName = req.body.groupName
+    const description = req.body.description
+    const tag = req.body.tag
+    const visibility = req.body.visibility
+    db.query(
+        "INSERT INTO SOCIAL_GROUP (Group_name,Description,Visibility,Tag) VALUES (?,?,?,?)",
+        [groupName,description,visibility,tag],
+        (err,result)=> {
+            if(err) {
+                console.log({err: err});
+            } else {
+                res.send({message: "created"});
+            }
+        }
+    );
+});
+
+app.get('/groups/new', (req,res) => {
+    db.query(
+        "SELECT Tag_ID as 'ID', Tag_Name as 'name' FROM GROUP_TAG GT",
+        (err,result)=> {
+            if(err) {
+                console.log({err: err});
+            }
+            
+            if (result.length > 0) {
+                console.log(result)
+                res.send(result);
+            } else {
+                res.send({message: "No Tags."});
+            }
+        }
+    );
+});
 
 app.post('/auth/register', (req,res) => {
     const username = req.body.username
@@ -40,22 +76,117 @@ app.post('/auth/register', (req,res) => {
     const email = req.body.email
     const phone = req.body.phone
     db.query(
-        "INSERT INTO USERS (User_ID,User_Name,Password,Email,Phone_Number) VALUES (100,?,?,?,?)",
+        "INSERT INTO USERS (User_Name,Password,Email,Phone_Number) VALUES (?,?,?,?)",
         [username,password,email,phone],
         (err,result)=> {
             if(err) {
                 console.log({err: err});
+            } else {
+                res.send({message: "created"});
             }
         }
     );
+});
+
+app.get("/", (req, res) => {
+    if (req.session.user) {
+      res.send({ loggedIn: true, user: req.session.user });
+    } else {
+      res.send({ loggedIn: false });
+    }
 });
 
 app.post('/auth/login', (req,res) => {
     const username = req.body.username
     const password = req.body.password
     db.query(
-        "SELECT * FROM USERS WHERE User_Name = ? AND Password = ?;",
+        "SELECT U.User_ID as ID, U.User_Name as name, U.Password FROM USERS U WHERE User_Name = ? AND Password = ?;",
         [username,password],
+        (err,result)=> {
+            if(err) {
+                console.log({err: err});
+            }
+            if (result.length > 0) {
+                if(password === result[0],password) {
+                    console.log(result);
+                    req.session.user = result;
+                    console.log(req.session.user);
+                    res.send(true);
+                }
+                else 
+                {
+                    res.send({message: "Wrong username or password."});
+                }
+                
+            } else {
+                res.send({message: "No such user"});
+            }
+        }
+    );
+});
+
+
+
+app.get('/profile/:id', (req,res)=> {
+    const UserID = req.params.id
+    db.query(
+        `SELECT U.User_ID as ID, SG.Group_ID as GroupID, U.User_Name as Name, U.Email, U.Phone_Number as Phone, U.Join_Date as Date, SG.Group_name as GroupNM, UG1.Reputation
+        FROM USERS U
+        left JOIN PARTICIPATES_IN UG1 ON U.User_ID = UG1.User_ID 
+        Left JOIN SOCIAL_GROUP SG ON SG.Group_ID = UG1.Group_ID
+        WHERE UG1.Reputation IS NULL OR UG1.Reputation > 
+            (SELECT AVG(UG2.Reputation)
+            FROM PARTICIPATES_IN UG2
+            WHERE UG1.Group_ID = UG2.Group_ID)
+        AND U.User_ID = ?;`,
+        UserID,
+        (err,result)=> {
+            console.log(result);
+            if(err) {
+                console.log({err: err});
+            }
+            if (result) {
+                res.send(result);
+            } else {
+                res.send({message: "No User with ID."});
+            }
+        }
+    );
+});
+
+app.get('/groups/:id', (req,res) => {
+    const groupID = req.params.id
+    db.query(
+        `select Group_ID as ID,Group_name as Name,Description,GT.Tag_Name as Tag,Visibility, Group_Added_Date as Date
+        from SOCIAL_GROUP SG
+        JOIN GROUP_TAG GT on GT.Tag_ID = SG.Tag
+        where SG.GROUP_ID = ? ;`,
+        [groupID],
+        (err,result)=> {
+            console.log(result);
+            if(err) {
+                console.log({err: err});
+            }
+            if (result) {
+                res.send(result);
+            } else {
+                res.send({message: "No Group with ID."});
+            }
+        }
+    );
+});
+
+app.post('/groups/:id/role', (req,res) => {
+
+    const role = req.body.role
+    const groupID = req.params.id
+    db.query(
+        `SELECT USERS.User_ID as "ID", USERS.User_Name, PARTICIPATES_IN.User_Added_Date AS "Join Date", PARTICIPATES_IN.Reputation
+        FROM PARTICIPATES_IN 
+        JOIN SOCIAL_GROUP ON SOCIAL_GROUP.Group_ID = PARTICIPATES_IN.Group_ID
+        JOIN USERS ON PARTICIPATES_IN.User_ID =  USERS.User_ID
+        WHERE PARTICIPATES_IN.Role like ? AND SOCIAL_GROUP.Group_ID = ?;`,
+        ['%'+role+'%',groupID],
         (err,result)=> {
             if(err) {
                 console.log({err: err});
@@ -63,15 +194,21 @@ app.post('/auth/login', (req,res) => {
             if (result.length > 0) {
                 res.send(result);
             } else {
-                res.send({message: "Wrong username or password."});
+                res.send({message: "No Users In Role."});
             }
         }
     );
 });
 
+
 app.get('/groups', (req,res) => {
     db.query(
-        `SELECT SG.Group_ID as 'ID',SG.Group_name as 'Group Name',SG.Description,GT.Tag_Name as 'Tag' FROM SOCIAL_GROUP SG JOIN GROUP_TAG GT ON GT.Tag_ID = SG.Tag WHERE Visibility = 'Public';`,
+        `SELECT SG.Group_ID as 'ID',SG.Group_name as 'Group Name',SG.Description,GT.Tag_Name as 'Tag', SG.Visibility,count(PI.User_ID) as 'count'
+        FROM SOCIAL_GROUP SG 
+        JOIN GROUP_TAG GT ON GT.Tag_ID = SG.Tag
+        LEFT JOIN PARTICIPATES_IN PI ON PI.Group_ID = SG.Group_ID 
+        where Visibility in ('Protected','Public')
+Group by SG.Group_ID,SG.Group_name,SG.Description,GT.Tag_Name`,
         (err,result)=> {
             if(err) {
                 console.log({err: err});
@@ -87,6 +224,63 @@ app.get('/groups', (req,res) => {
 });
 
 
+app.post('/groups', (req,res) => {
+    const search = req.body.search
+    const visibility = req.body.visibility
+    const order = req.body.order
+    console.log(visibility);
+    if (visibility.length > 0) {
+        db.query(
+            `SELECT SG.Group_ID as 'ID',SG.Group_name as 'Group Name',SG.Description,GT.Tag_Name as 'Tag', SG.Visibility,count(PI.User_ID) as 'count'
+            FROM SOCIAL_GROUP SG 
+            JOIN GROUP_TAG GT ON GT.Tag_ID = SG.Tag
+            LEFT JOIN PARTICIPATES_IN PI ON PI.Group_ID = SG.Group_ID 
+            where Visibility in (?) and Group_name like ?
+            Group by SG.Group_ID,SG.Group_name,SG.Description,GT.Tag_Name
+            ORDER BY ?`,
+            [visibility,'%'+search+'%',order],
+            (err,result)=> {
+                if(err) {
+                    console.log({err: err});
+                }     
+                if (result.length > 0) {
+                    res.send(result);
+                    
+                } else {
+                    res.send({message: "No Groups."});
+                }
+            }
+        );
+    } else {
+        db.query(
+            `SELECT SG.Group_ID as 'ID',SG.Group_name as 'Group Name',SG.Description,GT.Tag_Name as 'Tag', SG.Visibility,count(PI.User_ID) as 'count'
+            FROM SOCIAL_GROUP SG 
+            JOIN GROUP_TAG GT ON GT.Tag_ID = SG.Tag
+            LEFT JOIN PARTICIPATES_IN PI ON PI.Group_ID = SG.Group_ID 
+            where Visibility in ('Public','Protected') and Group_name like ?
+            Group by SG.Group_ID,SG.Group_name,SG.Description,GT.Tag_Name
+            ORDER BY ?`,
+            ['%'+search+'%',order],
+            (err,result)=> {
+                if(err) {
+                    console.log({err: err});
+                }
+                
+                if (result.length > 0) {
+                    res.send(result);
+                } else {
+                    res.send({message: "No Groups."});
+                }
+            }
+        );
+    }
+});
+
+
+
+
+
+
 /**
  * query 10 from pahse 2: 
  * Purpose: Determine the number of group members who 
@@ -98,7 +292,7 @@ app.get('/groups', (req,res) => {
  * 
  * send server response to the frontend.
  */
-app.get('/groups', (req,res) => {
+app.get('/', (req,res) => {
     db.query(
         `Select
             E.Event_ID,

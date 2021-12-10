@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import {useNavigate} from 'react-router-dom'
 import Axios from 'axios';
 
 function Login() {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const navigate = useNavigate();
     const login = (event) => {
         event.preventDefault();
         Axios.post("http://localhost:5000/auth/login", {
@@ -11,7 +13,12 @@ function Login() {
             password: password,
         }).then((response)=> {
             console.log(response);
+            if (response) {
+                navigate('/');
+                window.location.reload(true);
+            }
         });
+
     };
 
     return (
