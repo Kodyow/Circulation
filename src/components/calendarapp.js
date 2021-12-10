@@ -30,8 +30,10 @@ class CalendarApp extends React.Component {
    /**Event_ID        INT            NOT NULL    AUTO_INCREMENT,
       Date_Created    DATETIME         NOT NULL    DEFAULT    CURRENT_TIMESTAMP
  */
+
+    const mysql = require('mysql');
     const [events, setEvent] = useState([]);
-    const [header, setHeader] = useState(["Name", "Location", "Starts", "Ends", "Details", "Host", "Group", "Date(s)"]);
+    const [header, setHeader] = useState(["Name", "Location", "Starts", "Ends", "Details", "Date(s)", "Host", "Group"]);
 
     const [date, setdate] = useState(new Date());
     const [dateTime, setDatetime] = useState("");
@@ -42,7 +44,6 @@ class CalendarApp extends React.Component {
         // console.lo
       }
     }, [date]);
-    //<p>{date.value && date.value.toDateString()}</p>
 
     useEffect(() => {
         Axios.get("http://localhost:5000/calendar").then((response) => {

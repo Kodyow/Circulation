@@ -157,7 +157,7 @@ app.get('/profile/:id', (req,res)=> {
 app.get('/groups/:id', (req,res) => {
     const groupID = req.params.id
     db.query(
-        `select Group_ID as ID,Group_name as Name,Description,GT.Tag_Name as Tag,Visibility, Group_Added_Date as Date
+        `SELECT Group_ID as ID,Group_name as Name,Description,GT.Tag_Name as Tag,Visibility, Group_Added_Date as Date
         from SOCIAL_GROUP SG
         JOIN GROUP_TAG GT on GT.Tag_ID = SG.Tag
         where SG.GROUP_ID = ? ;`,
@@ -277,12 +277,59 @@ app.post('/groups', (req,res) => {
 });
 
 
+app.get('/calendar', (req,res) => {
+    db.query(
+        `SELECT Event_Name, Location, Start_Date_Time, End_Date_Time, Details, Repeats_When, User_Name, Group_Name
+        FROM EVENTS,USERS,SOCIAL_GROUP
+        WHERE USERS.User_ID = EVENTS.User_ID`,
+        (err,result)=> {
+            if(err) {
+                console.log({err: err});
+            }
+            
+            if (result.length > 0) {
+                res.send(result);
+            } else {
+                res.send({message: "No Events."});
+            }
+        }
+    );
+});
 
-
-
+app.post('/calendar', (req,res) => {
+    const eventName = req.body.eventName
+    const startDate = req.body.startDate
+    const endDate = req.body.endDate
+    const details = req.body.details
+    const hostID = req.body.userID
+    const location = req.body.location
+    const groupID = req.body.groupID
+    const dateTime = req.body.dateTime
+    const repeats = req.body.repeats
+    const repeatsWhen = req.body.repeatsWhen
+    console.log(visibility);
+    if (visibility.length > 0) {
+        db.query(
+            `INSERT INTO EVENTS (Event_Name, Start_Date_Time, End_Date_Time, Details, Host_User_ID, Location, Group_ID, Date_Created, Repeats, Repeats_When, Cancelled)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?),`,
+            [eventName,startDate,endDate,details,hostID,location,groupID,dateTime,repeats,repeatsWhen],
+            (err,result)=> {
+                if(err) {
+                    console.log({err: err});
+                }     
+                if (result.length > 0) {
+                    res.send(result);
+                    
+                } else {
+                    res.send({message: "No Events."});
+                }
+            }
+        );
+    }
+});
 
 /**
- * query 10 from pahse 2: 
+ * query 10 from phase 2: 
  * Purpose: Determine the number of group members who 
  * have accepted the event, cancelled, and have not responded.
  * 
