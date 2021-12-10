@@ -32,7 +32,6 @@
 .other-groups {
     border: 1px solid black;
     margin: 1%;
-    width: 70%;
     overflow: auto;
 }
 .other-card {

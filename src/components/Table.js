@@ -1,8 +1,11 @@
 import React, { useState, useEffect, componentDidMount} from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Table.css'
-export const Table = ({columns,query}) => {
-
+export const Table = ({columns,query,path}) => {
+    const navigate = useNavigate();
+    const handleOnClick = (id) => {
+        navigate(`/${path}/${id}`);
+    }
     
     return (
         <table className="table table-hover">
@@ -18,13 +21,11 @@ export const Table = ({columns,query}) => {
             <tbody>
                     {
                         query.map((element, index)=>
-                            <Link to={`/groups/${element.ID}`}>
-                                <tr key={element.ID}>
+                                <tr key={element.ID} onClick={ (event) => handleOnClick(element.ID)}>
                                     {
                                         renderColumns(element)
                                     }
                                 </tr>
-                            </Link>
 
                         )                        
                     }

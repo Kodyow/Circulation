@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import Axios from 'axios';
+import {useNavigate} from 'react-router-dom'
 
 function Register() {
     const [usernameReg, setUsernameReg] = useState("")
     const [passwordReg, setPasswordReg] = useState("")
     const [emailReg, setEmailReg] = useState("")
     const [phoneReg, setPhoneReg] = useState("")
+    const navigate = useNavigate()
     const register = (event) => {
         event.preventDefault();
         Axios.post("http://localhost:5000/auth/register", {
@@ -15,7 +17,11 @@ function Register() {
             phone: phoneReg,
         }).then((response)=> {
             console.log(response);
+            if (response) {
+            navigate('/login'); 
+            }
         });
+       
     };
 
     return (

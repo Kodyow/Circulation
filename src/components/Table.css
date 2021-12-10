@@ -2,3 +2,6 @@ tbody {
     overflow-y: scroll;
     height: 50%;
 }
+tbody tr {
+    cursor:pointer;
+}
