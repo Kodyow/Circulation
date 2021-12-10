@@ -34,6 +34,9 @@ app.use(
     })
   );
 
+  /**
+   * creates a new group and added the currently logged in user to the group
+   */
 app.post('/groups/new', (req,res) => {
     const groupName = req.body.groupName
     const description = req.body.description
@@ -52,6 +55,9 @@ app.post('/groups/new', (req,res) => {
     );
 });
 
+/**
+ * Dropdown tag filters for the create group page.
+ */
 app.get('/groups/new', (req,res) => {
     db.query(
         "SELECT Tag_ID as 'ID', Tag_Name as 'name' FROM GROUP_TAG GT",
@@ -70,6 +76,9 @@ app.get('/groups/new', (req,res) => {
     );
 });
 
+/**
+ * insert user data into database when user register.
+ */
 app.post('/auth/register', (req,res) => {
     const username = req.body.username
     const password = req.body.password
@@ -96,6 +105,10 @@ app.get("/", (req, res) => {
     }
 });
 
+/**
+ * login page query on submit checks if the user exsists in the database
+ * if the user exsist create cookies and session to keep user logged in.
+ */
 app.post('/auth/login', (req,res) => {
     const username = req.body.username
     const password = req.body.password
@@ -125,8 +138,12 @@ app.post('/auth/login', (req,res) => {
     );
 });
 
-
-
+/**
+ * Query 3
+ * This is a variation of Query 3 from phase 2
+ * Purpose: Determine the users who have accumulated enough reputation to be recognized.
+ * Expected: yielding all groups that the user has reputation greater than that average within.
+ */
 app.get('/profile/:id', (req,res)=> {
     const UserID = req.params.id
     db.query(
@@ -154,6 +171,9 @@ app.get('/profile/:id', (req,res)=> {
     );
 });
 
+/**
+ * api fetched on time of render basic group information query.
+ */
 app.get('/groups/:id', (req,res) => {
     const groupID = req.params.id
     db.query(
@@ -176,8 +196,13 @@ app.get('/groups/:id', (req,res) => {
     );
 });
 
+/**
+ * Query 8
+ * A Editier version of Query 8 from phase 2
+ * Purpose - Determine which users in the group and their roles
+ * expected - Yielding all users of a specific role in a spcific group  
+ */
 app.post('/groups/:id/role', (req,res) => {
-
     const role = req.body.role
     const groupID = req.params.id
     db.query(
@@ -200,7 +225,10 @@ app.post('/groups/:id/role', (req,res) => {
     );
 });
 
-
+/**
+ * Initial Query to get the data for the group at the time of the page
+ * render.
+ */
 app.get('/groups', (req,res) => {
     db.query(
         `SELECT SG.Group_ID as 'ID',SG.Group_name as 'Group Name',SG.Description,GT.Tag_Name as 'Tag', SG.Visibility,count(PI.User_ID) as 'count'
@@ -223,7 +251,10 @@ Group by SG.Group_ID,SG.Group_name,SG.Description,GT.Tag_Name`,
     );
 });
 
-
+/**
+ * contains the query for the groups page this api is user
+ * for when the group search and filter is used.
+ */
 app.post('/groups', (req,res) => {
     const search = req.body.search
     const visibility = req.body.visibility
