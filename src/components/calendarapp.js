@@ -27,12 +27,7 @@ class CalendarApp extends React.Component {
   }
 
  function CalSched () {
-   /**Event_ID        INT            NOT NULL    AUTO_INCREMENT,
-      Date_Created    DATETIME         NOT NULL    DEFAULT    CURRENT_TIMESTAMP
- */
-
-    const mysql = require('mysql');
-    const [events, setEvent] = useState([]);
+    const [events, getEvent] = useState([]);
     const [header, setHeader] = useState(["Name", "Location", "Starts", "Ends", "Details", "Date(s)", "Host", "Group"]);
 
     const [date, setdate] = useState(new Date());
@@ -41,22 +36,22 @@ class CalendarApp extends React.Component {
     useEffect(() => {
       if (date.value) {
         setDatetime(date.value.toISOString());
+        //console.log(date.events);
         // console.lo
       }
     }, [date]);
 
     useEffect(() => {
         Axios.get("http://localhost:5000/calendar").then((response) => {
-            setEvent(response.data);
+            getEvent(response.data);
             console.log(response);
         });;
-    }, []);
+    }, [events]);
 
     return (
         <div className="calendar group-container clearfix">
           <CalendarComponent change={setdate} value={date}/>
-          <div>Date - {date.value && date.value.toDateString()}</div>
-          <p></p>
+          <div>Conflicting Events - {date.value && date.value.toDateString()} {events.currentValue && date.value}</div>
             <div className="my-events">
                 <h2>Events</h2>
                 {/* <GroupList cardClassName="my-card"/> */}

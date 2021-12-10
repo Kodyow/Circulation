@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-google-maps/api": "^2.7.0",
     "@syncfusion/ej2-react-calendars": "^19.3.56",
     "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^11.2.7",

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, componentDidMount} from 'react';
 import Axios from 'axios';
-import { GroupList } from './GroupList'
+//import { GroupList } from './GroupList'
 import './Groups.css'
 import { Table } from './Table'
 import {useNavigate} from 'react-router-dom'
