@@ -14,6 +14,7 @@ import logo from '../resources/logo.png'
 import './Nav.css'
 import GroupsNew from './GroupsNew';
 import Event from './Event';
+import GoogleMap from './GoogleMap';
 
 
 export const Navbar = () => {
@@ -154,6 +155,10 @@ function Home() {
                     <h4 class="card-title">Welcome to Circulation!</h4>
                     <p class="card-text">Circulation is a way for you to connect with other people based on interests and help you 
                         with your schedule both with attending and scheduling events.</p>
+                    <p class="card-text">Through Circulation, you will be able to see when events you want to attend
+                         or host will overlap or clash with each other. The purpose of this web app is to help people and groups 
+                         schedule events at times that work best for the majority of people. The initial focus was on student RSOs here
+                         at the University of Washington Tacoma.</p>
                 </div>
             </div>
                 
@@ -197,6 +202,7 @@ function About() {
                          or host will overlap or clash with each other.</p>
                 </div>
             </div>
+            <GoogleMap />
         </div>
     );
 }

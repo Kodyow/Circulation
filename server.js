@@ -438,6 +438,27 @@ app.get('/event/:id', (req,res) => {
 // });
 
 /**
+ * Return the location data for events for the map to find the lat and long
+ */
+app.get('/map', (req,res) => {
+    db.query(
+        `SELECT Location
+        FROM EVENTS`,
+        (err,result)=> {
+            if(err) {
+                console.log({err: err});
+            }
+            
+            if (result.length > 0) {
+                res.send(result);
+            } else {
+                res.send({message: "No Events."});
+            }
+        }
+    );
+});
+
+/**
  * query 10 from phase 2: 
  * Purpose: Determine the number of group members who 
  * have accepted the evSELECT EVENTS.Event_Name, USERS.User_Name, ATTENDS.Event_Role
