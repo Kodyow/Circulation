@@ -10,7 +10,9 @@ const mapStyles = {
 
 export class MapContainer extends Component {
   render() {
-      //<LocationData />
+      <LocationData />
+      const eventLatitude = LocationData.latitude
+      const eventLongitude = LocationData.longitude
     return (
       <Map
         google={this.props.google}
@@ -18,8 +20,8 @@ export class MapContainer extends Component {
         style={mapStyles}
         initialCenter={
           {
-            lat: LocationData.setLat,
-            lng: LocationData.setLong
+            lat: eventLatitude,
+            lng: eventLongitude
           }
         }
       />
@@ -31,13 +33,6 @@ function LocationData() {
     const [eventlocation, getLocation] = useState("");
     const [latitude, setLat] = useState();
     const [longitude, setLong] = useState();
-    
-    /*useEffect(() => {
-        Axios.get("http://localhost:5000/calendar").then((response) => {
-            getEvent(response.data);
-            console.log(response);
-        });;
-    }, [location]); */
 
     useEffect(() => {
         Axios.get("http://localhost:5000/map").then((response) => {
@@ -47,13 +42,14 @@ function LocationData() {
     }, [eventlocation]);
 
     useEffect((eventlocation) => {
+        if (eventlocation.data) {
         Geocode.fromAddress(eventlocation.data).then(
           response => {
             setLat(response.results[0].geometry.location.lat);
             setLong(response.results[0].geometry.location.lng);
             getLocation(response.data);
           }
-        )}, [latitude, longitude]
+        )}}, [latitude, longitude]
       )
 }
 
