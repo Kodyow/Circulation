@@ -307,7 +307,9 @@ app.post('/groups', (req,res) => {
     }
 });
 
-
+/**
+ * Select data to show about the event, includeing the host user's name, and the group name.
+ */
 app.get('/calendar', (req,res) => {
     db.query(
         `SELECT Event_Name, Location, Start_Date_Time, End_Date_Time, Details, Repeats_When, User_Name, Group_Name
@@ -327,6 +329,9 @@ app.get('/calendar', (req,res) => {
     );
 });
 
+/**
+ * Insert into table info about event that is user related, most of which is provided by user input
+ */
 app.post('/calendar', (req,res) => {
     const eventName = req.body.eventName
     const startDate = req.body.startDate
@@ -357,6 +362,27 @@ app.post('/calendar', (req,res) => {
             }
         );
     }
+});
+
+/**
+ * Return the location data for events for the map to find the lat and long
+ */
+app.get('/map', (req,res) => {
+    db.query(
+        `SELECT Location
+        FROM EVENTS`,
+        (err,result)=> {
+            if(err) {
+                console.log({err: err});
+            }
+            
+            if (result.length > 0) {
+                res.send(result);
+            } else {
+                res.send({message: "No Events."});
+            }
+        }
+    );
 });
 
 /**

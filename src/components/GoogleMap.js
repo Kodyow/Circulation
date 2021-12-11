@@ -28,7 +28,7 @@ export class MapContainer extends Component {
 }
 
 function LocationData() {
-    const [location, getLocation] = useState("");
+    const [eventlocation, getLocation] = useState("");
     const [latitude, setLat] = useState();
     const [longitude, setLong] = useState();
     
@@ -40,13 +40,20 @@ function LocationData() {
     }, [location]); */
 
     useEffect(() => {
-        Geocode.fromAddress(location.data).then(
+        Axios.get("http://localhost:5000/map").then((response) => {
+            getLocation(response.data);
+            console.log(response);
+        });;
+    }, [eventlocation]);
+
+    useEffect((eventlocation) => {
+        Geocode.fromAddress(eventlocation.data).then(
           response => {
             setLat(response.results[0].geometry.location.lat);
             setLong(response.results[0].geometry.location.lng);
             getLocation(response.data);
           }
-        )}, [location]
+        )}, [latitude, longitude]
       )
 }
 
