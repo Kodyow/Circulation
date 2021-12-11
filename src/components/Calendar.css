@@ -70,7 +70,7 @@ header #logo .icon {
 
 main {
   display: block;
-  margin: 0 auto;
+  margin: auto;
   margin-top: 5em;
   max-width: 50em;
 }
@@ -228,4 +228,12 @@ main {
   flex-grow: 0;
   flex-basis: calc(100%/7);
   width: calc(100%/7);
+}
+
+table.event tr td {
+  font: 0.55em sans-serif;
+}
+
+table.event tr th {
+  font: 0.55em sans-serif;
 }

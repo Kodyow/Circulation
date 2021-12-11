@@ -28,7 +28,7 @@ export const Groups = () => {
         Axios.post("http://localhost:5000/groups", {
             search: searchInput,
             visibility: arrayViewCheckBox,
-            order: selectedOrder,
+            order: selectedOrder
         }).then((response) => {
             setGroup(response.data);
             console.log(response);
@@ -46,9 +46,6 @@ export const Groups = () => {
 
     }
 
-    const onSubmit = (event) => {
-        
-    }
 
     return (
         <div className="group-container clearfix">
@@ -56,7 +53,7 @@ export const Groups = () => {
                 <fieldset className="form-group">
                     <legend className="mt-4">Search</legend>
                     <div className="input-group mb-3">
-                        <input type="text" className="form-control" placeholder="Search by group name..." aria-label="Recipient's username" aria-describedby="button-addon2" onChange={setSearchInput}/>
+                        <input type="input" className="form-control" placeholder="Search by group name..." aria-label="Recipient's username" aria-describedby="button-addon2" onChange={(e) => setSearchInput(e.target.value)}/>
                         <input className="btn btn-primary" type="submit" id="button-addon2"/>
                     </div>
                     <button type="button" className="btn btn-primary" onClick={(event) => setMyView(!myView)}>View My Groups</button>
@@ -77,8 +74,8 @@ export const Groups = () => {
                     <div className="form-group">
                     <label htmlFor="group-role-dropdown" className="form-label mt-4">Select Member Role: </label>
                     <select className="form-select" id="group-role-dropdown" onChange={(event) => setSelectedOrder(event.target.value)} value={selectedOrder}>
-                        <option value="Group_Name">Group Name</option>
-                        <option value="Tag">Tag</option>
+                        <option value="Group_name">Group Name</option>
+                        <option value="GT.Tag_Name">Tag</option>
                         <option value="count(PI.User_ID) DESC">Most Members</option>
                     </select>
                     </div>

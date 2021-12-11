@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import Axios from 'axios';
 
-import { Route,Routes,Outlet,NavLink } from 'react-router-dom'
+import { Route,Routes,Outlet,NavLink,useNavigate } from 'react-router-dom'
 import { Groups } from "./Groups";
 import Profile from "./Profile";
 import SocialGroup from "./SocialGroup";
@@ -13,6 +13,7 @@ import circulation from '../resources/circulation.png'
 import logo from '../resources/logo.png'
 import './Nav.css'
 import GroupsNew from './GroupsNew';
+import Event from './Event';
 
 
 export const Navbar = () => {
@@ -28,6 +29,7 @@ export const Navbar = () => {
                             <Route path="groups/:id" element={<SocialGroup />}/>
                             <Route path="social" element={<SocialGroup />}/>
                             <Route path="calendar" element={<Calendar />} />
+                            <Route path="event/:id" element={<Event />} />
                             <Route path="about" element={<About />} />
                             <Route path="profile/:id" element={<Profile />} />
                             <Route path="login" element={<Login />} />
@@ -43,6 +45,7 @@ export const Navbar = () => {
 function Layout() {
     const [loginStatus, setLoginStatus] = useState();
     const [userData, setUserData] = useState([]);
+    const navigate = useNavigate();
     
     Axios.defaults.withCredentials = true
 
@@ -55,6 +58,24 @@ function Layout() {
             console.log(response);
         });
     }, []);
+
+    const logout = (event) => {
+        event.preventDefault();
+        Axios.get("http://localhost:5000/logout").then( (res) => {
+            navigate('/');
+        });
+        Axios.get("http://localhost:5000/").then((response) => {
+            if (response.data.loggedIn === true) {
+                setLoginStatus(response.data.loggedIn);
+                setUserData(response.data.user[0]);
+            } else {
+                setLoginStatus(response.data.loggedIn);
+            }
+            console.log(response);
+        });
+
+    };
+
     return (
     <div>
         <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -108,7 +129,7 @@ function Layout() {
                         <NavLink className={`nav-link ${!loginStatus? " hidden" : ""}`} to={`/profile/${userData.ID}`}>Profile</NavLink>
                     </li>
                     <li className="nav-item">
-                        <NavLink className={`nav-link ${!loginStatus? " hidden" : ""}`} to={`/profile/${userData.ID}`}>Logout</NavLink>
+                        <NavLink className={`nav-link ${!loginStatus? " hidden" : ""}`} to={"/logout"} onClick={logout}>Logout</NavLink>
                     </li>
 
                 </ul>

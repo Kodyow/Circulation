@@ -33,6 +33,7 @@ app.use(
       },
     })
   );
+  
 
   /**
    * creates a new group and added the currently logged in user to the group
@@ -103,6 +104,14 @@ app.get("/", (req, res) => {
     } else {
       res.send({ loggedIn: false });
     }
+});
+
+app.get("/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if(err) 
+            return console.log(err);
+        res.redirect('/');
+    });
 });
 
 /**
@@ -253,13 +262,15 @@ Group by SG.Group_ID,SG.Group_name,SG.Description,GT.Tag_Name`,
 
 /**
  * contains the query for the groups page this api is user
- * for when the group search and filter is used.
+ * for when the group search and filter is usetGroupInfosed.
  */
 app.post('/groups', (req,res) => {
     const search = req.body.search
     const visibility = req.body.visibility
     const order = req.body.order
     console.log(visibility);
+    console.log(search);
+    console.log(order);
     if (visibility.length > 0) {
         db.query(
             `SELECT SG.Group_ID as 'ID',SG.Group_name as 'Group Name',SG.Description,GT.Tag_Name as 'Tag', SG.Visibility,count(PI.User_ID) as 'count'
@@ -308,11 +319,45 @@ app.post('/groups', (req,res) => {
 });
 
 
-app.get('/calendar', (req,res) => {
+app.post('/calendar', (req,res) => {
+    const mydate = req.body.selectdate
+    console.log(mydate)
     db.query(
-        `SELECT Event_Name, Location, Start_Date_Time, End_Date_Time, Details, Repeats_When, User_Name, Group_Name
-        FROM EVENTS,USERS,SOCIAL_GROUP
-        WHERE USERS.User_ID = EVENTS.User_ID`,
+        `Select
+        E.Event_ID as ID,
+        SG.Group_name as GroupName, 
+        E.Event_Name as EventName,
+        E.Location,
+        E.Start_Date_Time as StartDate,
+        E.End_Date_Time as EndDate,E.Details,
+        ifnull(ACCEPT_COUNT.Accept_Count,0) AS Acount,
+        ifnull(CANCEL_COUNT.Cancel_Count,0) AS Ccount,
+        ifnull(NO_REPONSE.No_Response_Count,0) AS NRcount
+    FROM EVENTS E
+    join SOCIAL_GROUP SG on SG.Group_ID = E.Group_ID
+    LEFT JOIN (
+        SELECT EU.Event_ID,E.Event_Name, count(EU.USER_ID) AS Accept_Count
+        FROM ATTENDS EU
+        JOIN EVENTS E ON E.Event_ID = EU.Event_ID
+        WHERE Accepted_Invite = 1
+        GROUP BY EU.Event_ID
+    ) ACCEPT_COUNT ON  ACCEPT_COUNT.Event_ID = E.Event_ID
+    LEFT JOIN (
+        SELECT EU.Event_ID,E.Event_Name, count(EU.USER_ID) AS Cancel_Count
+        FROM ATTENDS EU
+        JOIN EVENTS E on E.Event_ID = EU.Event_ID
+        WHERE Accepted_Invite = 0
+        GROUP BY EU.Event_ID
+    ) CANCEL_COUNT ON  CANCEL_COUNT.Event_ID = E.Event_ID
+    LEFT JOIN (
+        SELECT E.Event_ID,E.Event_Name,count(UG.User_ID) AS No_Response_Count
+        FROM PARTICIPATES_IN UG 
+        LEFT JOIN EVENTS E ON E.Group_ID = UG.Group_ID
+        LEFT JOIN ATTENDS EU ON EU.Event_ID = E.Event_ID AND UG.User_ID = EU.User_ID
+        WHERE EU.User_ID IS NULL AND E.Event_ID IS NOT NULL
+        GROUP BY E.Event_ID
+    ) NO_REPONSE ON NO_REPONSE.Event_ID = E.Event_ID
+where CAST(E.Start_Date_Time as Date) = ?;`,[mydate],
         (err,result)=> {
             if(err) {
                 console.log({err: err});
@@ -320,49 +365,87 @@ app.get('/calendar', (req,res) => {
             
             if (result.length > 0) {
                 res.send(result);
-            } else {
-                res.send({message: "No Events."});
+                console.log(result);
+            } 
+        }
+    );
+    
+});
+
+app.get('/event/:id', (req,res) => {
+    const EID = req.params.id
+    console.log(EID);
+    db.query(
+        `SELECT E.Event_ID as EID,
+        E.Event_Name as Ename, 
+        E.Details, 
+        E.Location,
+        E.Start_Date_Time as Sdate,
+        E.End_Date_Time as Edate,
+        E.Repeats_When,
+        U2.User_ID as HID,
+        U1.User_ID as ID,
+        U1.User_Name as Uname, 
+        A.Event_Role as role
+        FROM EVENTS E
+        left JOIN ATTENDS as A ON E.Event_ID = A.Event_ID
+        left JOIN USERS as U1 ON A.User_ID = U1.User_ID
+        left JOIN USERS as U2 ON E.Host_User_ID = U2.User_ID
+        WHERE A.Accepted_Invite = 1
+        AND E.Event_ID = ?;`,[EID],
+        (err,result)=> {
+            if(err) {
+                console.log({err: err});
             }
+            
+            if (result) {
+                res.send(result);
+                console.log(result);
+            } 
         }
     );
 });
 
-app.post('/calendar', (req,res) => {
-    const eventName = req.body.eventName
-    const startDate = req.body.startDate
-    const endDate = req.body.endDate
-    const details = req.body.details
-    const hostID = req.body.userID
-    const location = req.body.location
-    const groupID = req.body.groupID
-    const dateTime = req.body.dateTime
-    const repeats = req.body.repeats
-    const repeatsWhen = req.body.repeatsWhen
-    console.log(visibility);
-    if (visibility.length > 0) {
-        db.query(
-            `INSERT INTO EVENTS (Event_Name, Start_Date_Time, End_Date_Time, Details, Host_User_ID, Location, Group_ID, Date_Created, Repeats, Repeats_When, Cancelled)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?),`,
-            [eventName,startDate,endDate,details,hostID,location,groupID,dateTime,repeats,repeatsWhen],
-            (err,result)=> {
-                if(err) {
-                    console.log({err: err});
-                }     
-                if (result.length > 0) {
-                    res.send(result);
+// app.post('/calendar', (req,res) => {
+//     const eventName = req.body.eventName
+//     const startDate = req.body.startDate
+//     const endDate = req.body.endDate
+//     const details = req.body.details
+//     const hostID = req.body.userID
+//     const location = req.body.location
+//     const groupID = req.body.groupID
+//     const dateTime = req.body.dateTime
+//     const repeats = req.body.repeats
+//     const repeatsWhen = req.body.repeatsWhen
+//     if (visibility.length > 0) {
+//         db.query(
+//             `INSERT INTO EVENTS (Event_Name, Start_Date_Time, End_Date_Time, Details, Host_User_ID, Location, Group_ID, Date_Created, Repeats, Repeats_When, Cancelled)
+//             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?),`,
+//             [eventName,startDate,endDate,details,hostID,location,groupID,dateTime,repeats,repeatsWhen],
+//             (err,result)=> {
+//                 if(err) {
+//                     console.log({err: err});
+//                 }     
+//                 if (result.length > 0) {
+//                     res.send(result);
                     
-                } else {
-                    res.send({message: "No Events."});
-                }
-            }
-        );
-    }
-});
+//                 } else {
+//                     res.send({message: "No Events."});
+//                 }
+//             }
+//         );
+//     }
+// });
 
 /**
  * query 10 from phase 2: 
  * Purpose: Determine the number of group members who 
- * have accepted the event, cancelled, and have not responded.
+ * have accepted the evSELECT EVENTS.Event_Name, USERS.User_Name, ATTENDS.Event_Role
+FROM EVENTS
+JOIN ATTENDS ON EVENTS.Event_ID = ATTENDS.Event_ID
+JOIN USERS ON ATTENDS.User_ID = USERS.User_ID
+WHERE ATTENDS.Accepted_Invite = 1;
+ent, cancelled, and have not responded.
  * 
  * Expected:A table containing the data for all events displaying 
  * the number of members who accepted the event, cancelled the event, 
