@@ -31,7 +31,6 @@ export const Navbar = () => {
                             <Route path="social" element={<SocialGroup />}/>
                             <Route path="calendar" element={<Calendar />} />
                             <Route path="event/:id" element={<Event />} />
-                            <Route path="about" element={<About />} />
                             <Route path="profile/:id" element={<Profile />} />
                             <Route path="login" element={<Login />} />
                             <Route path="register" element={<Register />} />
@@ -97,9 +96,6 @@ function Layout() {
                     </li>
                     <li className="nav-item">
                     <NavLink className="nav-link" to="/calendar">Calendar</NavLink>
-                    </li>
-                    <li className="nav-item">  
-                    <NavLink className="nav-link" to="/about">About</NavLink>
                     </li>
                     {/*
                     <li className="nav-item dropdown">

@@ -20,6 +20,7 @@ export const Table = ({columns,query,path}) => {
             </thead>
             <tbody>
                     {
+                        query?
                         query.map((element, index)=>
                                 <tr key={element.ID} onClick={ (event) => handleOnClick(element.ID)}>
                                     {
@@ -27,7 +28,8 @@ export const Table = ({columns,query,path}) => {
                                     }
                                 </tr>
 
-                        )                        
+                        )          
+                        : <></>                
                     }
             </tbody>
         </table>

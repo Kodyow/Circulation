@@ -267,10 +267,8 @@ Group by SG.Group_ID,SG.Group_name,SG.Description,GT.Tag_Name`,
 app.post('/groups', (req,res) => {
     const search = req.body.search
     const visibility = req.body.visibility
-    const order = req.body.order
     console.log(visibility);
     console.log(search);
-    console.log(order);
     if (visibility.length > 0) {
         db.query(
             `SELECT SG.Group_ID as 'ID',SG.Group_name as 'Group Name',SG.Description,GT.Tag_Name as 'Tag', SG.Visibility,count(PI.User_ID) as 'count'
@@ -278,18 +276,18 @@ app.post('/groups', (req,res) => {
             JOIN GROUP_TAG GT ON GT.Tag_ID = SG.Tag
             LEFT JOIN PARTICIPATES_IN PI ON PI.Group_ID = SG.Group_ID 
             where Visibility in (?) and Group_name like ?
-            Group by SG.Group_ID,SG.Group_name,SG.Description,GT.Tag_Name
-            ORDER BY ?`,
-            [visibility,'%'+search+'%',order],
+            Group by SG.Group_ID,SG.Group_name,SG.Description,GT.Tag_Name`,
+            [visibility,'%'+search+'%'],
             (err,result)=> {
                 if(err) {
                     console.log({err: err});
                 }     
                 if (result.length > 0) {
                     res.send(result);
+                    console.log(result);
                     
                 } else {
-                    res.send({message: "No Groups."});
+                    res.send();
                 }
             }
         );
@@ -300,25 +298,39 @@ app.post('/groups', (req,res) => {
             JOIN GROUP_TAG GT ON GT.Tag_ID = SG.Tag
             LEFT JOIN PARTICIPATES_IN PI ON PI.Group_ID = SG.Group_ID 
             where Visibility in ('Public','Protected') and Group_name like ?
-            Group by SG.Group_ID,SG.Group_name,SG.Description,GT.Tag_Name
-            ORDER BY ?`,
-            ['%'+search+'%',order],
+            Group by SG.Group_ID,SG.Group_name,SG.Description,GT.Tag_Name`,
+            ['%'+search+'%'],
             (err,result)=> {
                 if(err) {
                     console.log({err: err});
                 }
                 
                 if (result.length > 0) {
-                    res.send(result);
+                    console.log(result);
                 } else {
-                    res.send({message: "No Groups."});
+                    res.send();
                 }
             }
         );
     }
 });
 
-
+/**
+ * query 10 from phase 2: 
+ * Purpose: Determine the number of group members who 
+ * have accepted the evSELECT EVENTS.Event_Name, USERS.User_Name, ATTENDS.Event_Role
+FROM EVENTS
+JOIN ATTENDS ON EVENTS.Event_ID = ATTENDS.Event_ID
+JOIN USERS ON ATTENDS.User_ID = USERS.User_ID
+WHERE ATTENDS.Accepted_Invite = 1;
+ent, cancelled, and have not responded.
+ * 
+ * Expected:A table containing the data for all events displaying 
+ * the number of members who accepted the event, cancelled the event, 
+ * or did not respond. If the value was null or not a zero was returned.
+ * 
+ * send server response to the frontend.
+ */
 app.post('/calendar', (req,res) => {
     const mydate = req.body.selectdate
     console.log(mydate)
@@ -372,6 +384,10 @@ where CAST(E.Start_Date_Time as Date) = ?;`,[mydate],
     
 });
 
+// Query 1  
+// Purpose: Learn the role different user’s will playing at different events
+// Expected: A table containing a person’s user name, an event they’ll be attending, and their       role for the event
+
 app.get('/event/:id', (req,res) => {
     const EID = req.params.id
     console.log(EID);
@@ -382,8 +398,9 @@ app.get('/event/:id', (req,res) => {
         E.Location,
         E.Start_Date_Time as Sdate,
         E.End_Date_Time as Edate,
-        E.Repeats_When,
+        E.Repeats_When as rep,
         U2.User_ID as HID,
+        U2.User_Name as Hname, 
         U1.User_ID as ID,
         U1.User_Name as Uname, 
         A.Event_Role as role
@@ -406,36 +423,6 @@ app.get('/event/:id', (req,res) => {
     );
 });
 
-// app.post('/calendar', (req,res) => {
-//     const eventName = req.body.eventName
-//     const startDate = req.body.startDate
-//     const endDate = req.body.endDate
-//     const details = req.body.details
-//     const hostID = req.body.userID
-//     const location = req.body.location
-//     const groupID = req.body.groupID
-//     const dateTime = req.body.dateTime
-//     const repeats = req.body.repeats
-//     const repeatsWhen = req.body.repeatsWhen
-//     if (visibility.length > 0) {
-//         db.query(
-//             `INSERT INTO EVENTS (Event_Name, Start_Date_Time, End_Date_Time, Details, Host_User_ID, Location, Group_ID, Date_Created, Repeats, Repeats_When, Cancelled)
-//             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?),`,
-//             [eventName,startDate,endDate,details,hostID,location,groupID,dateTime,repeats,repeatsWhen],
-//             (err,result)=> {
-//                 if(err) {
-//                     console.log({err: err});
-//                 }     
-//                 if (result.length > 0) {
-//                     res.send(result);
-                    
-//                 } else {
-//                     res.send({message: "No Events."});
-//                 }
-//             }
-//         );
-//     }
-// });
 
 /**
  * Return the location data for events for the map to find the lat and long
@@ -457,68 +444,6 @@ app.get('/map', (req,res) => {
         }
     );
 });
-
-/**
- * query 10 from phase 2: 
- * Purpose: Determine the number of group members who 
- * have accepted the evSELECT EVENTS.Event_Name, USERS.User_Name, ATTENDS.Event_Role
-FROM EVENTS
-JOIN ATTENDS ON EVENTS.Event_ID = ATTENDS.Event_ID
-JOIN USERS ON ATTENDS.User_ID = USERS.User_ID
-WHERE ATTENDS.Accepted_Invite = 1;
-ent, cancelled, and have not responded.
- * 
- * Expected:A table containing the data for all events displaying 
- * the number of members who accepted the event, cancelled the event, 
- * or did not respond. If the value was null or not a zero was returned.
- * 
- * send server response to the frontend.
- */
-app.get('/', (req,res) => {
-    db.query(
-        `Select
-            E.Event_ID,
-            E.Event_Name,
-            ifnull(ACCEPT_COUNT.Accept_Count,0) AS "Number of Members Accpected",
-            ifnull(CANCEL_COUNT.Cancel_Count,0) AS "Number of Members Canceled",
-            ifnull(NO_REPONSE.No_Response_Count,0) AS "Number of Members No Reply"
-        FROM EVENTS E
-        LEFT JOIN (
-            SELECT EU.Event_ID,E.Event_Name, count(EU.USER_ID) AS Accept_Count
-            FROM ATTENDS EU
-            JOIN EVENTS E ON E.Event_ID = EU.Event_ID
-            WHERE Accepted_Invite = 1
-            GROUP BY EU.Event_ID
-        ) ACCEPT_COUNT ON  ACCEPT_COUNT.Event_ID = E.Event_ID
-        LEFT JOIN (
-            SELECT EU.Event_ID,E.Event_Name, count(EU.USER_ID) AS Cancel_Count
-            FROM ATTENDS EU
-            JOIN EVENTS E on E.Event_ID = EU.Event_ID
-            WHERE Accepted_Invite = 0
-            GROUP BY EU.Event_ID
-        ) CANCEL_COUNT ON  CANCEL_COUNT.Event_ID = E.Event_ID
-        LEFT JOIN (
-            SELECT E.Event_ID,E.Event_Name,count(UG.User_ID) AS No_Response_Count
-            FROM PARTICIPATES_IN UG 
-            LEFT JOIN EVENTS E ON E.Group_ID = UG.Group_ID
-            LEFT JOIN ATTENDS EU ON EU.Event_ID = E.Event_ID AND UG.User_ID = EU.User_ID
-            WHERE EU.User_ID IS NULL AND E.Event_ID IS NOT NULL
-            GROUP BY E.Event_ID
-        ) NO_REPONSE ON NO_REPONSE.Event_ID = E.Event_ID;`,
-        (err,result)=> {
-            if(err) {
-                console.log({err: err});
-            }
-            
-            if (result.length > 0) {
-                console.log(result);
-                res.send(result);
-            } else {
-                res.send({message: "No Event Data."});
-            }
-        }
-    );
-});    
 
 app.get("/",(req, res) => {
     if (req.session.user) 

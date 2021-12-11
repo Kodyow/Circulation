@@ -5,6 +5,7 @@ import { Table } from './Table'
 import './SocialGroup.css'
 import { format } from 'date-fns';
 
+
 const SocialGroup = () => {
     const navigate = useNavigate();
     const handleOnClick = (id) => {
@@ -37,18 +38,12 @@ const SocialGroup = () => {
                 <div className="card-body">
                     <h5 className="card-title">My Name: {data.Details}</h5>
                 </div>
-                {/* <div class="card-body">
-                    <img
-                    src={person}
-                    alt="Profile Image Not Avaliable"
-                    height="450"
-                    width="370" 
-                    className="user-image"/>
-                </div> */}
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item">Location: {data.Location}</li>
                     <li className="list-group-item">Start Date: {start}</li>
                     <li className="list-group-item">End Date: {end}</li>
+                    <li className="list-group-item">Repeats: {data.rep}</li>
+                    <li className="list-group-item">Hosts Name: {data.Hname}</li>
                 </ul>
                 </div>
             </div>

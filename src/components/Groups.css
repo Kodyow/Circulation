@@ -1,11 +1,9 @@
 .group-container {
-    border: 1px solid black;
     width: 80%;
     margin-left: auto;
     margin-right: auto;
 }
 .my-groups{
-    border: 1px solid black;
     max-height: 20rem;
     margin: 1%;
     width: 70%;
@@ -19,7 +17,7 @@
     position:;
 } */
 .my-card {
-    border: 1px solid black;
+
     min-width: 10em;
     width: 31.75%;
     height: 13rem;
@@ -30,12 +28,12 @@
     overflow-y:auto;
 }
 .other-groups {
-    border: 1px solid black;
+
     margin: 1%;
     overflow: auto;
 }
 .other-card {
-    border: 1px solid black;
+  
     min-width: 10em;
     height: 13rem;
     width: 31.75%;

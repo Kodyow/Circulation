@@ -47,6 +47,7 @@ class CalendarApp extends React.Component {
     // }, []);
     
     const handleOnCalendar = (inputdate) => {
+      getEvent([])
       var mydate = "";
       mydate = format(new Date(inputdate),`yyyy-MM-dd`)
       console.log(mydate);
@@ -81,6 +82,7 @@ class CalendarApp extends React.Component {
                     </thead>
                     <tbody>
                             {
+                              
                               events?
                                 events.map((element, index)=>
                                         <tr key={element.ID} onClick={ (event) => handleOnClick(element.ID)}>  

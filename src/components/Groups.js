@@ -70,15 +70,6 @@ export const Groups = () => {
                         <input className="form-check-input" type="checkbox" value="Private" id="flexCheckPrivate" onChange={handleViewCheckBox}/>
                         <label className="form-check-label" htmlFor="flexCheckPrivate">Private</label>
                     </div>
-                    <legend className="mt-4">Order By</legend>
-                    <div className="form-group">
-                    <label htmlFor="group-role-dropdown" className="form-label mt-4">Select Member Role: </label>
-                    <select className="form-select" id="group-role-dropdown" onChange={(event) => setSelectedOrder(event.target.value)} value={selectedOrder}>
-                        <option value="Group_name">Group Name</option>
-                        <option value="GT.Tag_Name">Tag</option>
-                        <option value="count(PI.User_ID) DESC">Most Members</option>
-                    </select>
-                    </div>
                 </fieldset>
             </form>
 
@@ -86,6 +77,7 @@ export const Groups = () => {
             <div className="other-groups clearfix">
                 <h2>Public Groups</h2>
                 {/* <GroupList cardClassName="other-card"/> */}
+                
                 <Table columns={header} query={group} path="groups"/>
             </div>            
             <button class="btn btn-lg btn-primary" type="button" onClick={ (e) =>navigate('/groups/new')}>Create New Group</button>
